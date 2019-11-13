@@ -27,6 +27,9 @@ namespace OCP\DirectEditing;
 
 use OCP\AppFramework\Http\Response;
 
+/**
+ * @since 18.0.0
+ */
 interface IEditor {
 
 	/**
@@ -34,6 +37,7 @@ interface IEditor {
 	 *
 	 * e.g. richdocuments
 	 *
+	 * @since 18.0.0
 	 * @return string
 	 */
 	public function getId(): string;
@@ -43,6 +47,7 @@ interface IEditor {
 	 *
 	 * e.g. Collabora Online
 	 *
+	 * @since 18.0.0
 	 * @return string
 	 */
 	public function getName(): string;
@@ -50,6 +55,7 @@ interface IEditor {
 	/**
 	 * A list of mimetypes that should open the editor by default
 	 *
+	 * @since 18.0.0
 	 * @return array
 	 */
 	public function getMimetypes(): array;
@@ -57,6 +63,7 @@ interface IEditor {
 	/**
 	 * A list of mimetypes that can be opened in the editor optionally
 	 *
+	 * @since 18.0.0
 	 * @return array
 	 */
 	public function getMimetypesOptional(): array;
@@ -64,6 +71,7 @@ interface IEditor {
 	/**
 	 * Return a list of file creation options to be presented to the user
 	 *
+	 * @since 18.0.0
 	 * @return array of ICreateFromTemplate|ICreateEmpty
 	 */
 	public function getCreators(): array;
@@ -71,6 +79,7 @@ interface IEditor {
 	/**
 	 * Return if the view is able to securely view a file without downloading it to the browser
 	 *
+	 * @since 18.0.0
 	 * @return bool
 	 */
 	public function isSecure(): bool;
@@ -83,6 +92,7 @@ interface IEditor {
 	 *
 	 * This behavior is similar to the current direct editing implementation in collabora where we generate a one-time token and switch over to the regular wopi token for the actual editing/saving process
 	 *
+	 * @since 18.0.0
 	 * @return Response
 	 */
 	public function open(IToken $token): Response;

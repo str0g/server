@@ -34,6 +34,7 @@ class ComposerStaticInitFiles
         'OCA\\Files\\Activity\\Settings\\FileRestored' => __DIR__ . '/..' . '/../lib/Activity/Settings/FileRestored.php',
         'OCA\\Files\\App' => __DIR__ . '/..' . '/../lib/App.php',
         'OCA\\Files\\AppInfo\\Application' => __DIR__ . '/..' . '/../lib/AppInfo/Application.php',
+        'OCA\\Files\\BackgroundJob\\CleanupDirectEditingTokens' => __DIR__ . '/..' . '/../lib/BackgroundJob/CleanupDirectEditingTokens.php',
         'OCA\\Files\\BackgroundJob\\CleanupFileLocks' => __DIR__ . '/..' . '/../lib/BackgroundJob/CleanupFileLocks.php',
         'OCA\\Files\\BackgroundJob\\DeleteOrphanedItems' => __DIR__ . '/..' . '/../lib/BackgroundJob/DeleteOrphanedItems.php',
         'OCA\\Files\\BackgroundJob\\ScanFiles' => __DIR__ . '/..' . '/../lib/BackgroundJob/ScanFiles.php',

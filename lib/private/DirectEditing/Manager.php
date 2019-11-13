@@ -42,10 +42,12 @@ use OCP\Share\IShare;
 
 class Manager implements IManager {
 
-	/** @var IEditor[] */
-	private $editors;
+	private const TOKEN_CLEANUP_TIME = 12 * 60 * 60 ;
 
 	public const TABLE_TOKENS = 'direct_edit';
+
+	/** @var IEditor[] */
+	private $editors;
 
 	/** @var IDBConnection */
 	private $connection;
@@ -133,15 +135,13 @@ class Manager implements IManager {
 		try {
 			/** @var IEditor $editor */
 			$tokenObject = $this->getToken($token);
-			// TODO: REMOVE DEBUG CHECK BEFORE MERGING
-			if ($tokenObject->hasBeenAccessed() && !\OC::$server->getSystemConfig()->getValue('debug', false)) {
+			if ($tokenObject->hasBeenAccessed()) {
 				throw new \RuntimeException('Token has already been used and can only be used for followup requests');
 			}
 			$editor = $this->getEditor($tokenObject->getEditor());
 			$this->accessToken($token);
 
 		} catch (\Throwable $throwable) {
-			// TODO: if file gets accessed twice the token will be invalidated in general
 			$this->invalidateToken($token);
 			return new NotFoundResponse();
 		}
@@ -170,11 +170,11 @@ class Manager implements IManager {
 		throw new \RuntimeException('Failed to validate the token');
 	}
 
-	public function cleanup(): void {
+	public function cleanup(): int {
 		$query = $this->connection->getQueryBuilder();
 		$query->delete(self::TABLE_TOKENS)
-			->where($query->expr()->lt('timestamp', $query->createNamedParameter(time() - 300)));
-		$result = $query->execute();
+			->where($query->expr()->lt('timestamp', $query->createNamedParameter(time() - self::TOKEN_CLEANUP_TIME)));
+		return $query->execute();
 	}
 
 	public function refreshToken(string $token): bool {

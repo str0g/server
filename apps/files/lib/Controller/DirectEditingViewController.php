@@ -24,30 +24,44 @@
 namespace OCA\Files\Controller;
 
 
+use Exception;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\DirectEditing\IManager;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
 use OCP\EventDispatcher\IEventDispatcher;
+use OCP\ILogger;
 use OCP\IRequest;
 
 class DirectEditingViewController extends Controller {
 
 	/** @var IManager */
 	private $directEditingManager;
+	/** @var ILogger */
+	private $logger;
 
-	public function __construct($appName, IRequest $request, IEventDispatcher $eventDispatcher, IManager $manager) {
+	public function __construct($appName, IRequest $request, IEventDispatcher $eventDispatcher, IManager $manager, ILogger $logger) {
 		parent::__construct($appName, $request);
 
 		$this->directEditingManager = $manager;
+		$this->logger = $logger;
 		$eventDispatcher->dispatch(RegisterDirectEditorEvent::class, new RegisterDirectEditorEvent($this->directEditingManager));
 	}
 
 	/**
 	 * @PublicPage
 	 * @NoCSRFRequired
+	 *
+	 * @param string $token
+	 * @return Response
 	 */
 	public function edit(string $token): Response {
-		return $this->directEditingManager->edit($token);
+		try {
+			return $this->directEditingManager->edit($token);
+		} catch (Exception $e) {
+			$this->logger->logException($e);
+			return new NotFoundResponse();
+		}
 	}
 }

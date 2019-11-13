@@ -19,6 +19,7 @@ return array(
     'OCA\\Files\\Activity\\Settings\\FileRestored' => $baseDir . '/../lib/Activity/Settings/FileRestored.php',
     'OCA\\Files\\App' => $baseDir . '/../lib/App.php',
     'OCA\\Files\\AppInfo\\Application' => $baseDir . '/../lib/AppInfo/Application.php',
+    'OCA\\Files\\BackgroundJob\\CleanupDirectEditingTokens' => $baseDir . '/../lib/BackgroundJob/CleanupDirectEditingTokens.php',
     'OCA\\Files\\BackgroundJob\\CleanupFileLocks' => $baseDir . '/../lib/BackgroundJob/CleanupFileLocks.php',
     'OCA\\Files\\BackgroundJob\\DeleteOrphanedItems' => $baseDir . '/../lib/BackgroundJob/DeleteOrphanedItems.php',
     'OCA\\Files\\BackgroundJob\\ScanFiles' => $baseDir . '/../lib/BackgroundJob/ScanFiles.php',

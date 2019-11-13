@@ -25,6 +25,9 @@ namespace OCP\DirectEditing;
 
 use OCP\EventDispatcher\Event;
 
+/**
+ * @since 18.0.0
+ */
 class RegisterDirectEditorEvent extends Event {
 
 	/**
@@ -37,6 +40,10 @@ class RegisterDirectEditorEvent extends Event {
 		$this->manager = $manager;
 	}
 
+	/**
+	 * @since 18.0.0
+	 * @param IEditor $editor
+	 */
 	public function register(IEditor $editor): void {
 		$this->manager->registerDirectEditor($editor);
 	}

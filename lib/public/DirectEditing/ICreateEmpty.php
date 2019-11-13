@@ -26,6 +26,9 @@ namespace OCP\DirectEditing;
 
 use OCP\Files\File;
 
+/**
+ * @since 18.0.0
+ */
 abstract class ICreateEmpty {
 
 	/**
@@ -33,6 +36,7 @@ abstract class ICreateEmpty {
 	 *
 	 * e.g. document/spreadsheet/presentation
 	 *
+	 * @since 18.0.0
 	 * @return string
 	 */
 	abstract public function getId(): string;
@@ -42,6 +46,7 @@ abstract class ICreateEmpty {
 	 *
 	 * e.g Create a new document
 	 *
+	 * @since 18.0.0
 	 * @return string
 	 */
 	abstract public function getName(): string;
@@ -49,6 +54,7 @@ abstract class ICreateEmpty {
 	/**
 	 * Default file extension for the new file
 	 *
+	 * @since 18.0.0
 	 * @return string
 	 */
 	abstract public function getExtension(): string;
@@ -56,6 +62,7 @@ abstract class ICreateEmpty {
 	/**
 	 * Add content when creating empty files
 	 *
+	 * @since 18.0.0
 	 * @param File $file
 	 */
 	public function create(File $file, string $creatorId = null, string $templateId = null): void {

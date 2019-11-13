@@ -23,27 +23,39 @@
 
 namespace OCP\DirectEditing;
 
-// TODO: Use this interface instead of array
-interface ITemplate {
+use JsonSerializable;
+
+abstract class ITemplate implements JsonSerializable {
 
 	/**
 	 * Return a unique id so the app can identify the template
 	 *
+	 * @since 18.0.0
 	 * @return string
 	 */
-	public function getId(): string;
+	abstract public function getId(): string;
 
 	/**
 	 * Return a title that is displayed to the user
 	 *
+	 * @since 18.0.0
 	 * @return string
 	 */
-	public function getTitle(): string;
+	abstract public function getTitle(): string;
 
 	/**
 	 * Return a link to the template preview image
 	 *
+	 * @since 18.0.0
 	 * @return string
 	 */
-	public function getPreview(): string;
+	abstract public function getPreview(): string;
+
+	public function jsonSerialize() {
+		return [
+			'id' => $this->getId(),
+			'title' => $this->getTitle(),
+			'preview' => $this->getPreview(),
+		];
+	}
 }

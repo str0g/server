@@ -25,7 +25,6 @@ declare(strict_types=1);
 namespace OCP\DirectEditing;
 
 use OCP\AppFramework\Http\Response;
-use OCP\Files\File;
 use OCP\Files\NotPermittedException;
 use RuntimeException;
 
@@ -34,6 +33,7 @@ interface IManager {
 	/**
 	 * Register a new editor
 	 *
+	 * @since 18.0.0
 	 * @param IEditor $directEditor
 	 */
 	public function registerDirectEditor(IEditor $directEditor): void;
@@ -41,12 +41,16 @@ interface IManager {
 	/**
 	 * Open the editing page for a provided token
 	 *
+	 * @since 18.0.0
 	 * @param string $token
 	 * @return Response
 	 */
 	public function edit(string $token): Response;
 
 	/**
+	 * Create a new token based on the file path and editor details
+	 *
+	 * @since 18.0.0
 	 * @param string $path
 	 * @param string $editorId
 	 * @param string $creatorId
@@ -59,6 +63,8 @@ interface IManager {
 
 	/**
 	 * Get the token details for a given token
+	 *
+	 * @since 18.0.0
 	 * @param string $token
 	 * @return IToken
 	 */
@@ -66,8 +72,11 @@ interface IManager {
 
 	/**
 	 * Cleanup expired tokens
+	 *
+	 * @since 18.0.0
+	 * @return int number of deleted tokens
 	 */
-	public function cleanup(): void;
+	public function cleanup(): int;
 
 }
 

@@ -26,38 +26,50 @@ namespace OCP\DirectEditing;
 
 use OCP\Files\File;
 
+/**
+ * @since 18.0.0
+ */
 interface IToken {
 
 	/**
 	 * Extend the token validity time
+	 *
+	 * @since 18.0.0
 	 */
 	public function extend(): void;
 
 	/**
 	 * Invalidate the token
+	 *
+	 * @since 18.0.0
 	 */
 	public function invalidate(): void;
 
 	/**
 	 * Check if the token has already been used
 	 *
+	 * @since 18.0.0
 	 * @return bool
 	 */
 	public function hasBeenAccessed(): bool;
 
 	/**
 	 * Change to the user scope of the token
+	 *
+	 * @since 18.0.0
 	 */
 	public function useTokenScope(): void;
 
 	/**
 	 * Get the file that is related to the token
 	 *
+	 * @since 18.0.0
 	 * @return File
 	 */
 	public function getFile(): File;
 
 	/**
+	 * @since 18.0.0
 	 * @return string
 	 */
 	public function getEditor(): string;

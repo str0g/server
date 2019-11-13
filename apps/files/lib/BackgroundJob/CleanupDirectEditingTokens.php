@@ -7,7 +7,7 @@ use OCP\DirectEditing\IManager;
 
 class CleanupDirectEditingTokens extends TimedJob {
 
-	const INTERVAL_MINUTES = 1;
+	const INTERVAL_MINUTES = 15 * 60;
 
 	/**
 	 * @var IManager
@@ -27,6 +27,5 @@ class CleanupDirectEditingTokens extends TimedJob {
 	 */
 	public function run($argument) {
 		$this->manager->cleanup();
-		\OC::$server->getLogger()->error('CleanupDirectEditing');
 	}
 }

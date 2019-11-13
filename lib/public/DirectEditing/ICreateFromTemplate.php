@@ -23,12 +23,15 @@
 
 namespace OCP\DirectEditing;
 
-
+/**
+ * @since 18.0.0
+ */
 abstract class ICreateFromTemplate extends ICreateEmpty {
 
 	/**
 	 * List of available templates for the create from template action
 	 *
+	 * @since 18.0.0
 	 * @return array
 	 */
 	abstract public function getTemplates(): array;

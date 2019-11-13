@@ -34,6 +34,7 @@ use OCP\DirectEditing\IEditor;
 use OCP\DirectEditing\IManager;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
 use OCP\EventDispatcher\IEventDispatcher;
+use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 
@@ -45,11 +46,15 @@ class DirectEditingController extends OCSController {
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
+	/** @var ILogger */
+	private $logger;
+
 	public function __construct($appName, IRequest $request, $corsMethods, $corsAllowedHeaders, $corsMaxAge,
-								IEventDispatcher $eventDispatcher, IURLGenerator $urlGenerator, IManager $manager) {
+								IEventDispatcher $eventDispatcher, IURLGenerator $urlGenerator, IManager $manager, ILogger $logger) {
 		parent::__construct($appName, $request, $corsMethods, $corsAllowedHeaders, $corsMaxAge);
 
 		$this->directEditingManager = $manager;
+		$this->logger = $logger;
 		$this->urlGenerator = $urlGenerator;
 		$eventDispatcher->dispatch(RegisterDirectEditorEvent::class, new RegisterDirectEditorEvent($this->directEditingManager));
 	}
@@ -96,40 +101,45 @@ class DirectEditingController extends OCSController {
 
 	/**
 	 * @NoAdminRequired
-	 *
-	 * @return DataResponse
 	 */
-	public function create(string $path, string $editorId, string $creatorId, $templateId = null): DataResponse {
+	public function create(string $path, string $editorId, string $creatorId, string $templateId = null): DataResponse {
 		try {
 			$token = $this->directEditingManager->create($path, $editorId, $creatorId, $templateId);
 			return new DataResponse([
 				'url' => $this->urlGenerator->linkToRouteAbsolute('files.DirectEditingView.edit', ['token' => $token])
 			]);
 		} catch (Exception $e) {
+			$this->logger->logException($e);
 			return new DataResponse('Failed to create file', Http::STATUS_FORBIDDEN);
 		}
 	}
 
 	/**
 	 * @NoAdminRequired
-	 *
-	 * @return DataResponse
 	 */
 	public function open(int $fileId, string $editorId = null): DataResponse {
-		$token = $this->directEditingManager->open($fileId, $editorId);
-		return new DataResponse([
-			'url' => $this->urlGenerator->linkToRouteAbsolute('files.DirectEditingView.edit', ['token' => $token])
-		]);
+		try {
+			$token = $this->directEditingManager->open($fileId, $editorId);
+			return new DataResponse([
+				'url' => $this->urlGenerator->linkToRouteAbsolute('files.DirectEditingView.edit', ['token' => $token])
+			]);
+		} catch (Exception $e) {
+			$this->logger->logException($e);
+			return new DataResponse('Failed to open file', Http::STATUS_FORBIDDEN);
+		}
 	}
 
 
 
 	/**
 	 * @NoAdminRequired
-	 *
-	 * @return DataResponse
 	 */
 	public function templates(string $editorId, string $creatorId): DataResponse {
-		return new DataResponse($this->directEditingManager->getTemplates($editorId, $creatorId));
+		try {
+			return new DataResponse($this->directEditingManager->getTemplates($editorId, $creatorId));
+		} catch (Exception $e) {
+			$this->logger->logException($e);
+			return new DataResponse('Failed to open file', Http::STATUS_INTERNAL_SERVER_ERROR);
+		}
 	}
 }
