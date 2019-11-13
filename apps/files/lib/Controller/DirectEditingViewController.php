@@ -46,7 +46,7 @@ class DirectEditingViewController extends Controller {
 
 		$this->directEditingManager = $manager;
 		$this->logger = $logger;
-		$eventDispatcher->dispatch(RegisterDirectEditorEvent::class, new RegisterDirectEditorEvent($this->directEditingManager));
+		$eventDispatcher->dispatchTyped(new RegisterDirectEditorEvent($this->directEditingManager));
 	}
 
 	/**
