@@ -36,17 +36,21 @@ use OCP\IRequest;
 
 class DirectEditingViewController extends Controller {
 
+	/** @var IEventDispatcher */
+	private $eventDispatcher;
+
 	/** @var IManager */
 	private $directEditingManager;
+
 	/** @var ILogger */
 	private $logger;
 
 	public function __construct($appName, IRequest $request, IEventDispatcher $eventDispatcher, IManager $manager, ILogger $logger) {
 		parent::__construct($appName, $request);
 
+		$this->eventDispatcher = $eventDispatcher;
 		$this->directEditingManager = $manager;
 		$this->logger = $logger;
-		$eventDispatcher->dispatchTyped(new RegisterDirectEditorEvent($this->directEditingManager));
 	}
 
 	/**
@@ -57,6 +61,7 @@ class DirectEditingViewController extends Controller {
 	 * @return Response
 	 */
 	public function edit(string $token): Response {
+		$this->eventDispatcher->dispatchTyped(new RegisterDirectEditorEvent($this->directEditingManager));
 		try {
 			return $this->directEditingManager->edit($token);
 		} catch (Exception $e) {

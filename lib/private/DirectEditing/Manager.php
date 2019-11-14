@@ -28,7 +28,7 @@ use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\DB\QueryBuilder\IQueryBuilder;
-use OCP\DirectEditing\ICreateFromTemplate;
+use OCP\DirectEditing\ACreateFromTemplate;
 use OCP\DirectEditing\IEditor;
 use \OCP\DirectEditing\IManager;
 use OCP\DirectEditing\IToken;
@@ -84,7 +84,7 @@ class Manager implements IManager {
 		}
 		$templates = [];
 		foreach ($this->editors[$editor]->getCreators() as $creator) {
-			if ($creator instanceof ICreateFromTemplate && $creator->getId() === $type) {
+			if ($creator instanceof ACreateFromTemplate && $creator->getId() === $type) {
 				$templates = $creator->getTemplates();
 			}
 		}
@@ -164,8 +164,8 @@ class Manager implements IManager {
 		$query->select('*')->from(self::TABLE_TOKENS)
 			->where($query->expr()->eq('token', $query->createNamedParameter($token, IQueryBuilder::PARAM_STR)));
 		$result = $query->execute();
-		if ($result->rowCount() === 1) {
-			return new Token($this, $result->fetch(FetchMode::ASSOCIATIVE));
+		if ($tokenRow = $result->fetch(FetchMode::ASSOCIATIVE)) {
+			return new Token($this, $tokenRow);
 		}
 		throw new \RuntimeException('Failed to validate the token');
 	}

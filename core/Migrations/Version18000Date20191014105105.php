@@ -50,7 +50,6 @@ class Version18000Date20191014105105 extends SimpleMigrationStep {
 	public function changeSchema(IOutput $output, Closure $schemaClosure, array $options): ?ISchemaWrapper {
 		/** @var ISchemaWrapper $schema */
 		$schema = $schemaClosure();
-		//$schema->dropTable('direct_edit');
 		if (!$schema->hasTable('direct_edit')) {
 			$table = $schema->createTable('direct_edit');
 

@@ -28,8 +28,8 @@ use Exception;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCSController;
-use OCP\DirectEditing\ICreateEmpty;
-use OCP\DirectEditing\ICreateFromTemplate;
+use OCP\DirectEditing\ACreateEmpty;
+use OCP\DirectEditing\ACreateFromTemplate;
 use OCP\DirectEditing\IEditor;
 use OCP\DirectEditing\IManager;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
@@ -39,6 +39,9 @@ use OCP\IRequest;
 use OCP\IURLGenerator;
 
 class DirectEditingController extends OCSController {
+
+	/** @var IEventDispatcher */
+	private $eventDispatcher;
 
 	/** @var IManager */
 	private $directEditingManager;
@@ -53,10 +56,10 @@ class DirectEditingController extends OCSController {
 								IEventDispatcher $eventDispatcher, IURLGenerator $urlGenerator, IManager $manager, ILogger $logger) {
 		parent::__construct($appName, $request, $corsMethods, $corsAllowedHeaders, $corsMaxAge);
 
+		$this->eventDispatcher = $eventDispatcher;
 		$this->directEditingManager = $manager;
 		$this->logger = $logger;
 		$this->urlGenerator = $urlGenerator;
-		$eventDispatcher->dispatch(RegisterDirectEditorEvent::class, new RegisterDirectEditorEvent($this->directEditingManager));
 	}
 
 	/**
@@ -65,6 +68,8 @@ class DirectEditingController extends OCSController {
 	 * @return DataResponse
 	 */
 	public function get(): DataResponse {
+		$this->eventDispatcher->dispatch(RegisterDirectEditorEvent::class, new RegisterDirectEditorEvent($this->directEditingManager));
+
 		$capabilities = [
 			'editors' => [],
 			'creators' => []
@@ -81,7 +86,7 @@ class DirectEditingController extends OCSController {
 				'optionalMimetypes' => $editor->getMimetypesOptional(),
 				'secure' => $editor->isSecure(),
 			];
-			/** @var ICreateEmpty|ICreateFromTemplate $creator */
+			/** @var ACreateEmpty|ACreateFromTemplate $creator */
 			foreach ($editor->getCreators() as $creator) {
 				$id = $creator->getId();
 				$capabilities['creators'][$id] = [
@@ -90,7 +95,7 @@ class DirectEditingController extends OCSController {
 					'extension' => $creator->getExtension(),
 					'templates' => false
 				];
-				if ($creator instanceof ICreateFromTemplate) {
+				if ($creator instanceof ACreateFromTemplate) {
 					$capabilities['creators'][$id]['templates'] = true;
 				}
 
@@ -103,13 +108,15 @@ class DirectEditingController extends OCSController {
 	 * @NoAdminRequired
 	 */
 	public function create(string $path, string $editorId, string $creatorId, string $templateId = null): DataResponse {
+		$this->eventDispatcher->dispatch(RegisterDirectEditorEvent::class, new RegisterDirectEditorEvent($this->directEditingManager));
+
 		try {
 			$token = $this->directEditingManager->create($path, $editorId, $creatorId, $templateId);
 			return new DataResponse([
 				'url' => $this->urlGenerator->linkToRouteAbsolute('files.DirectEditingView.edit', ['token' => $token])
 			]);
 		} catch (Exception $e) {
-			$this->logger->logException($e);
+			$this->logger->logException($e, ['message' => 'Exception when creating a new file through direct editing']);
 			return new DataResponse('Failed to create file', Http::STATUS_FORBIDDEN);
 		}
 	}
@@ -118,13 +125,15 @@ class DirectEditingController extends OCSController {
 	 * @NoAdminRequired
 	 */
 	public function open(int $fileId, string $editorId = null): DataResponse {
+		$this->eventDispatcher->dispatch(RegisterDirectEditorEvent::class, new RegisterDirectEditorEvent($this->directEditingManager));
+
 		try {
 			$token = $this->directEditingManager->open($fileId, $editorId);
 			return new DataResponse([
 				'url' => $this->urlGenerator->linkToRouteAbsolute('files.DirectEditingView.edit', ['token' => $token])
 			]);
 		} catch (Exception $e) {
-			$this->logger->logException($e);
+			$this->logger->logException($e, ['message' => 'Exception when opening a file through direct editing']);
 			return new DataResponse('Failed to open file', Http::STATUS_FORBIDDEN);
 		}
 	}
@@ -135,6 +144,8 @@ class DirectEditingController extends OCSController {
 	 * @NoAdminRequired
 	 */
 	public function templates(string $editorId, string $creatorId): DataResponse {
+		$this->eventDispatcher->dispatch(RegisterDirectEditorEvent::class, new RegisterDirectEditorEvent($this->directEditingManager));
+
 		try {
 			return new DataResponse($this->directEditingManager->getTemplates($editorId, $creatorId));
 		} catch (Exception $e) {

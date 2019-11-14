@@ -23,18 +23,12 @@
 
 namespace OCP\DirectEditing;
 
+use JsonSerializable;
 
-use OCP\Files\File;
-
-/**
- * @since 18.0.0
- */
-abstract class ICreateEmpty {
+abstract class ATemplate implements JsonSerializable {
 
 	/**
-	 * Unique id for the creator to filter templates
-	 *
-	 * e.g. document/spreadsheet/presentation
+	 * Return a unique id so the app can identify the template
 	 *
 	 * @since 18.0.0
 	 * @return string
@@ -42,30 +36,26 @@ abstract class ICreateEmpty {
 	abstract public function getId(): string;
 
 	/**
-	 * Descriptive name for the create action
-	 *
-	 * e.g Create a new document
+	 * Return a title that is displayed to the user
 	 *
 	 * @since 18.0.0
 	 * @return string
 	 */
-	abstract public function getName(): string;
+	abstract public function getTitle(): string;
 
 	/**
-	 * Default file extension for the new file
+	 * Return a link to the template preview image
 	 *
 	 * @since 18.0.0
 	 * @return string
 	 */
-	abstract public function getExtension(): string;
+	abstract public function getPreview(): string;
 
-	/**
-	 * Add content when creating empty files
-	 *
-	 * @since 18.0.0
-	 * @param File $file
-	 */
-	public function create(File $file, string $creatorId = null, string $templateId = null): void {
-
+	public function jsonSerialize() {
+		return [
+			'id' => $this->getId(),
+			'title' => $this->getTitle(),
+			'preview' => $this->getPreview(),
+		];
 	}
 }
