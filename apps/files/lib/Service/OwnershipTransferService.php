@@ -100,6 +100,7 @@ class OwnershipTransferService {
 			$sourceUid,
 			$destinationUid,
 			$sourcePath,
+			$view,
 			$output
 		);
 
@@ -114,6 +115,7 @@ class OwnershipTransferService {
 			$sourceUid,
 			$sourcePath,
 			$finalTarget,
+			$view,
 			$output
 		);
 
@@ -145,9 +147,8 @@ class OwnershipTransferService {
 	protected function analyse(string $sourceUid,
 							   string $destinationUid,
 							   string $sourcePath,
+							   View $view,
 							   OutputInterface $output): void {
-		$view = new View();
-
 		$output->writeln('Validating quota');
 		$size = $view->getFileInfo($sourcePath, false)->getSize(false);
 		$freeSpace = $view->free_space($destinationUid . '/files/');
@@ -217,8 +218,8 @@ class OwnershipTransferService {
 	protected function transferFiles(string $sourceUid,
 									 string $sourcePath,
 									 string $finalTarget,
+									 View $view,
 									 OutputInterface $output): void {
-		$view = new View();
 		$output->writeln("Transferring files to $finalTarget ...");
 
 		// This change will help user to transfer the folder specified using --path option.
